@@ -72,10 +72,12 @@ function App() {
 
     function handleCardLike(card) {
         // Снова проверяем, есть ли уже лайк на этой карточке
-        const isLiked = card.likes.some(i => i._id === currentUser._id);
+        const likes = card.likes;
+        const isLiked = likes.some(i => i === currentUser._id);
+        const jwt = localStorage.getItem('jwt');
 
         // Отправляем запрос в API и получаем обновлённые данные карточки
-        api.changeLikeCardStatus(card._id, !isLiked)
+        api.changeLikeCardStatus(card._id, !isLiked, jwt)
             .then((newCard) => {
             setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
             })
@@ -86,8 +88,9 @@ function App() {
 
     function handleCardDelete(card) {
         const isDeleted = card._id;
+        const jwt = localStorage.getItem('jwt');
 
-        api.deleteCard(card._id)
+        api.deleteCard(card._id, jwt)
             .then((deletedCard) => {
                 const newCards = cards.filter(function(card) {
                     return card._id !== isDeleted;
@@ -100,7 +103,9 @@ function App() {
     }
 
     function handleUpdateUser({name, about}) {
-        api.updateUserInfo(name, about)
+        const jwt = localStorage.getItem('jwt');
+
+        api.updateUserInfo(name, about, jwt)
             .then((info) => {
                 setCurrentUser(info);
                 closeAllPopups();
@@ -111,7 +116,9 @@ function App() {
     }
 
     function handleUpdateAvatar(avatar) {
-        api.addNewAvatar(avatar)
+        const jwt = localStorage.getItem('jwt');
+
+        api.addNewAvatar(avatar, jwt)
             .then((data) => {
                 setCurrentUser(data);
                 closeAllPopups();
@@ -122,7 +129,9 @@ function App() {
     }
 
     function handleAddPlaceSubmit({name, link}) {
-        api.addNewCard(name, link)
+        const jwt = localStorage.getItem('jwt');
+
+        api.addNewCard(name, link, jwt)
             .then((newCard) => {
                 setCards([newCard, ...cards]);
                 closeAllPopups();

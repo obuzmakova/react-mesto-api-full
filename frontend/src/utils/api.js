@@ -74,16 +74,16 @@ export const BASE_URL = 'http://api.places.nomoredomains.rocks';
             .then((res) => checkResponse(res));
     }
 
-    export const changeLikeCardStatus = (cardId, isLiked) => {
+    export const changeLikeCardStatus = (cardId, isLiked, jwt) => {
         if (isLiked) {
-            return setLike(cardId);
+            return setLike(cardId, jwt);
         } else {
-           return deleteLike(cardId);
+           return deleteLike(cardId, jwt);
         }
     }
 
     export const setLike = (cardsId, jwt) => {
-        return fetch(`${BASE_URL}/cards/likes/${cardsId}`, {
+        return fetch(`${BASE_URL}/cards/${cardsId}/likes`, {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json',
@@ -95,7 +95,7 @@ export const BASE_URL = 'http://api.places.nomoredomains.rocks';
     }
 
     export const deleteLike = (cardsId, jwt) => {
-        return fetch(`${BASE_URL}/cards/likes/${cardsId}`, {
+        return fetch(`${BASE_URL}/cards/${cardsId}/likes`, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',
