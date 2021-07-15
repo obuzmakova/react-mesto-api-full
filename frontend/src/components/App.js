@@ -10,7 +10,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import Register from "./Register";
 import InfoTooltip from './InfoTooltip';
 import Login from "./Login";
-import api from '../utils/api';
+import * as api from '../utils/api';
 import {Redirect, Route, Switch, useHistory} from 'react-router-dom';
 import {CurrentUserContext} from "../contexts/CurrentUserContext";
 import Footer from "./Footer";
@@ -149,10 +149,10 @@ function App() {
     function handleLogin({email, password}) {
         auth.authorize(email, password)
             .then((data) => {
+                localStorage.setItem('jwt', data.token);
                 setUserData({email: email});
                 setLoggedIn(true);
                 history.push("/cards");
-                localStorage.setItem('jwt', data.token);
             })
             .catch(handleFail)
     }
@@ -198,8 +198,10 @@ function App() {
     }
 
     useEffect(() => {
+        const jwt = localStorage.getItem('jwt');
+
         if (loggedIn) {
-            Promise.all([api.getUserInfo(), api.getInitialCards()])
+            Promise.all([api.getUserInfo(jwt), api.getInitialCards(jwt)])
                 .then(([info, cards]) => {
                     setCurrentUser(info);
                     setCards(cards);

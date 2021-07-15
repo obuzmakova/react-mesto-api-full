@@ -1,10 +1,6 @@
-class Api {
-    constructor(options) {
-        this._url = options.baseUrl;
-        this._headers = options.headers;
-    }
+export const BASE_URL = 'http://api.places.nomoredomains.rocks';
 
-    _checkResponse(res) {
+    const checkResponse = (res) => {
         if (res.ok) {
             return res.json();
         }
@@ -12,95 +8,115 @@ class Api {
         return Promise.reject(`Ошибка: ${res.status}`);
     }
 
-    getUserInfo() {
-        return fetch(`${this._url}/users/me`, {
-            headers: this._headers,
+    export const getUserInfo = (jwt) => {
+        return fetch(`${BASE_URL}/users/me`, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${jwt}`
+            },
         })
-            .then(this._checkResponse);
+            .then((res) => checkResponse(res));
     }
 
-    getInitialCards() {
-        return fetch(`${this._url}/cards`, {
-            headers: this._headers,
+    export const getInitialCards = (jwt) => {
+        return fetch(`${BASE_URL}/cards`, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${jwt}`
+            },
         })
-            .then(this._checkResponse);
+            .then((res) => checkResponse(res));
     }
 
-    updateUserInfo(newName, newAbout) {
-        return fetch(`${this._url}/users/me`, {
+    export const updateUserInfo = (newName, newAbout, jwt) => {
+        return fetch(`${BASE_URL}/users/me`, {
             method: 'PATCH',
-            headers: this._headers,
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${jwt}`
+            },
             body: JSON.stringify({
                 name: newName,
                 about: newAbout
             })
         })
-            .then(this._checkResponse);
+            .then((res) => checkResponse(res));
     }
 
-    addNewCard(newName, newLink) {
-        return fetch(`${this._url}/cards`, {
+    export const addNewCard = (newName, newLink, jwt) => {
+        return fetch(`${BASE_URL}/cards`, {
             method: 'POST',
-            headers: this._headers,
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${jwt}`
+            },
             body: JSON.stringify({
                 name: newName,
                 link: newLink
             })
         })
-            .then(this._checkResponse);
+            .then((res) => checkResponse(res));
     }
 
-    deleteCard(cardsId) {
-        return fetch(`${this._url}/cards/${cardsId}`, {
+    export const deleteCard = (cardsId, jwt) => {
+        return fetch(`${BASE_URL}/cards/${cardsId}`, {
             method: 'DELETE',
-            headers: this._headers
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${jwt}`
+            },
         })
-            .then(this._checkResponse);
+            .then((res) => checkResponse(res));
     }
 
-
-    changeLikeCardStatus(cardId, isLiked) {
+    export const changeLikeCardStatus = (cardId, isLiked) => {
         if (isLiked) {
-            return this.setLike(cardId);
+            return setLike(cardId);
         } else {
-           return this.deleteLike(cardId);
+           return deleteLike(cardId);
         }
     }
 
-    setLike(cardsId) {
-        return fetch(`${this._url}/cards/likes/${cardsId}`, {
+    export const setLike = (cardsId, jwt) => {
+        return fetch(`${BASE_URL}/cards/likes/${cardsId}`, {
             method: 'PUT',
-            headers: this._headers
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${jwt}`
+            },
         })
-            .then(this._checkResponse);
+            .then((res) => checkResponse(res));
     }
 
-    deleteLike(cardsId) {
-        return fetch(`${this._url}/cards/likes/${cardsId}`, {
+    export const deleteLike = (cardsId, jwt) => {
+        return fetch(`${BASE_URL}/cards/likes/${cardsId}`, {
             method: 'DELETE',
-            headers: this._headers
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${jwt}`
+            },
         })
-            .then(this._checkResponse);
+            .then((res) => checkResponse(res));
     }
 
-    addNewAvatar(item) {
-        return fetch(`${this._url}/users/me/avatar`, {
+    export const addNewAvatar = (item, jwt) => {
+        return fetch(`${BASE_URL}/users/me/avatar`, {
             method: 'PATCH',
-            headers: this._headers,
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${jwt}`
+            },
             body: JSON.stringify({
                 avatar: item.avatar,
             })
         })
-            .then(this._checkResponse);
+            .then((res) => checkResponse(res));
     }
-}
-
-const api = new Api({
-    baseUrl: 'https://mesto.nomoreparties.co/v1/cohort-22',
-    headers: {
-        authorization: '40274b77-9ffb-4125-a1bf-81ac7871106e',
-        'Content-Type': 'application/json'
-    }
-});
-
-export default api;

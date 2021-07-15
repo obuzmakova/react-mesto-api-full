@@ -1,10 +1,9 @@
-export const BASE_URL = 'https://auth.nomoreparties.co';
+export const BASE_URL = 'http://api.places.nomoredomains.rocks';
 
 const checkResponse = (response) => {
     if (response.ok)
         return response.json();
-    else
-        Promise.reject(`Ошибка: ${response.status}`);
+    return Promise.reject(`Ошибка: ${response.status}`);
 }
 
 export const register = (email, password) => {
@@ -15,7 +14,7 @@ export const register = (email, password) => {
         },
         body: JSON.stringify({password, email})
     })
-        .then(checkResponse);
+        .then((res) => checkResponse(res));
 };
 export const authorize = (email, password) => {
     return fetch(`${BASE_URL}/signin`, {
@@ -26,7 +25,7 @@ export const authorize = (email, password) => {
         },
         body: JSON.stringify({email, password})
     })
-        .then(checkResponse);
+        .then((res) => checkResponse(res));
 };
 export const checkToken = (token) => {
     return fetch(`${BASE_URL}/users/me`, {
@@ -37,5 +36,5 @@ export const checkToken = (token) => {
             'Authorization': `Bearer ${token}`,
         }
     })
-        .then(checkResponse);
+        .then((res) => checkResponse(res));
 }
