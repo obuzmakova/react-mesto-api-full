@@ -4,14 +4,16 @@ import {CurrentUserContext}from '../contexts/CurrentUserContext';
 function Card(props) {
     const currentUser = React.useContext(CurrentUserContext);
 
-    const isOwn = props.card.owner._id === currentUser._id;
+    const isOwn = props.card.owner === currentUser._id;
 
     const cardDeleteButtonClassName = (
         `element__trash ${!isOwn ? 'element__trash_hidden' : 'element__trash'}`
     );
 
+    const likes = props.card.likes;
+
     // Определяем, есть ли у карточки лайк, поставленный текущим пользователем
-    const isLiked = props.card.likes.some(i => i._id === currentUser._id);
+    const isLiked = likes.some(i => i === currentUser._id);
 
     // Создаём переменную, которую после зададим в `className` для кнопки лайка
     const cardLikeButtonClassName = (
